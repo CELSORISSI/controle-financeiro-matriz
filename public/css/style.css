@@ -445,7 +445,7 @@ body {
 .matrix-table th, 
 .matrix-table td {
   border: 1px solid var(--border-color);
-  padding: 0.45rem 0.5rem;
+  padding: 0.25rem 0.4rem;
   text-align: center;
 }
 
@@ -608,7 +608,9 @@ body {
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.7rem;
-  margin-left: 0.2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   transition: all 0.2s;
 }
 
@@ -617,13 +619,19 @@ body {
   color: #ffffff;
 }
 
+.td-fixed .btn-icon {
+  width: 24px;
+  height: 24px;
+  font-size: 0.7rem;
+}
+
 /* Cell Interactive Item */
 .cell-day {
   cursor: pointer;
   width: 48px;
   min-width: 48px;
-  height: 42px;
-  padding: 2px !important;
+  height: 35px;
+  padding: 1px !important;
   vertical-align: middle;
   transition: transform 0.1s, box-shadow 0.15s;
   position: relative;

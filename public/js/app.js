@@ -330,8 +330,10 @@ document.addEventListener('DOMContentLoaded', () => {
             <span class="badge-venc-fixo">Dia ${parentConta.dia_vencimento_fixo || '-'}</span>
           </td>
           <td class="td-fixed" style="text-align: center;">
-            <button class="btn-icon btn-edit-conta" data-id="${parentConta.id}" title="Editar Conta"><i class="fa-solid fa-pen-to-square"></i></button>
-            <button class="btn-add-sub" data-parent-id="${parentConta.id}" title="Adicionar Sub-despesa a esta conta/cartão"><i class="fa-solid fa-plus"></i></button>
+            <div style="display: inline-flex; align-items: center; justify-content: center; gap: 3px;">
+              <button class="btn-add-sub" data-parent-id="${parentConta.id}" title="Adicionar Sub-despesa a esta conta/cartão"><i class="fa-solid fa-plus"></i></button>
+              <button class="btn-icon btn-edit-conta" data-id="${parentConta.id}" title="Editar Conta"><i class="fa-solid fa-pen-to-square"></i></button>
+            </div>
           </td>
       `;
 
