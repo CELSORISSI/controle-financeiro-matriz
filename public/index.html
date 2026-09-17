@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle Financeiro - Matriz Semanal de Contas</title>
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Sidebar Navigation (GLOVIS Style) -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-logo">FINANÇAS <span>®</span></div>
+        <div class="brand-subtitle">Navegação do Sistema</div>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="#" class="nav-item active">
+          <i class="fa-solid fa-calendar-week"></i>
+          <span>Matriz Semanal</span>
+        </a>
+        <a href="#" class="nav-item">
+          <i class="fa-solid fa-file-invoice-dollar"></i>
+          <span>Contas a Pagar</span>
+        </a>
+        <a href="#" class="nav-item">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Relatórios & KPIs</span>
+        </a>
+        <a href="#" class="nav-item">
+          <i class="fa-solid fa-credit-card"></i>
+          <span>Formas de Pagamento</span>
+        </a>
+        <a href="#" class="nav-item">
+          <i class="fa-solid fa-building-columns"></i>
+          <span>Bancos & Contas</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-section-title">CONFIGURAÇÕES</div>
+      <nav class="nav-menu">
+        <a href="#" class="nav-item"><i class="fa-solid fa-tags"></i> <span>Categorias</span></a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-sliders"></i> <span>Parâmetros</span></a>
+        <a href="#" class="nav-item"><i class="fa-solid fa-bell"></i> <span>Alertas de Vencimento</span></a>
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Header Bar -->
+      <header class="top-header">
+        <div class="header-title-box">
+          <h1>Controle de Contas a Pagar — Matriz por Semanas</h1>
+          <p>Controle Visual de Agendamentos, Formas de Pagamento, Vencimentos e Baixas</p>
+        </div>
+        <div class="header-status-badge">
+          <span class="status-dot online"></span>
+          <span class="status-text">SQLite | Porta 9900</span>
+          <div class="user-avatar">CF</div>
+        </div>
+      </header>
+
+      <!-- KPI Summary Cards (5 Cards matching Image 1 layout) -->
+      <section class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-icon blue"><i class="fa-solid fa-file-invoice"></i></div>
+          <div class="kpi-info">
+            <span class="kpi-value" id="kpi-total-contas">10</span>
+            <span class="kpi-label">CONTAS ATIVAS</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon green"><i class="fa-solid fa-sack-dollar"></i></div>
+          <div class="kpi-info">
+            <span class="kpi-value" id="kpi-total-valor">R$ 36.451,60</span>
+            <span class="kpi-label">TOTAL PREVISTO (MÊS)</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon cyan"><i class="fa-solid fa-calculator"></i></div>
+          <div class="kpi-info">
+            <span class="kpi-value" id="kpi-media-conta">R$ 3.645,16</span>
+            <span class="kpi-label">MÉDIA / CONTA (VER GRÁFICO)</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon purple"><i class="fa-solid fa-check-double"></i></div>
+          <div class="kpi-info">
+            <span class="kpi-value" id="kpi-distribuicao">2 Pago | 4 Pend. | 2 Agend.</span>
+            <span class="kpi-label">DISTRIBUIÇÃO DA AGENDA</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon amber"><i class="fa-solid fa-triangle-exclamation"></i></div>
+          <div class="kpi-info">
+            <span class="kpi-value" id="kpi-pendentes-vencidos">4</span>
+            <span class="kpi-label">DIAS C/ PENDÊNCIA / ZERO</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Filter Bar -->
+      <section class="filter-toolbar">
+        <div class="date-navigator">
+          <button id="btn-prev-month" class="btn-icon" title="Mês Anterior"><i class="fa-solid fa-chevron-left"></i></button>
+          <div class="current-month-display" id="current-month-label">Setembro 2026</div>
+          <button id="btn-next-month" class="btn-icon" title="Próximo Mês"><i class="fa-solid fa-chevron-right"></i></button>
+          <button id="btn-today" class="btn-secondary">Mês Atual</button>
+        </div>
+
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="search-input" placeholder="Buscar conta ou descrição...">
+        </div>
+
+        <div class="filter-dropdowns">
+          <select id="filter-categoria">
+            <option value="">Todas as Categorias</option>
+            <option value="Infraestrutura">Infraestrutura</option>
+            <option value="Utilidades">Utilidades</option>
+            <option value="TI">TI & Sistemas</option>
+            <option value="Pessoal">Pessoal</option>
+            <option value="Impostos">Impostos</option>
+            <option value="Serviços">Serviços</option>
+          </select>
+
+          <select id="filter-tipo-pagamento">
+            <option value="">Todos os Tipos de Pagamento</option>
+            <option value="boleto">Boleto Bancário</option>
+            <option value="cartao">Cartão de Crédito</option>
+            <option value="debito_conta">Débito em Conta</option>
+            <option value="pix">PIX</option>
+            <option value="dinheiro">Dinheiro</option>
+          </select>
+        </div>
+
+        <div class="toolbar-actions">
+          <button class="btn-primary" id="btn-nova-conta"><i class="fa-solid fa-plus"></i> Nova Conta</button>
+        </div>
+      </section>
+
+      <!-- Table Header Title Bar -->
+      <div class="table-title-bar">
+        <div class="table-title">Contas a Pagar & Matriz Semanal</div>
+        <div class="table-month-badge" id="table-month-badge">Setembro 2026</div>
+      </div>
+
+      <!-- Matrix Table Scroll Wrapper -->
+      <div class="matrix-table-container">
+        <table class="matrix-table" id="matrix-table">
+          <thead id="matrix-thead">
+            <!-- Dynamically generated week headers and day headers -->
+          </thead>
+          <tbody id="matrix-tbody">
+            <!-- Dynamically generated rows -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Bottom Legend -->
+      <footer class="legend-bar">
+        <span class="legend-label">Legenda:</span>
+        <span class="legend-item"><span class="legend-box empty"></span> Vazio (Sem Apontamento)</span>
+        <span class="legend-item"><span class="legend-box pago"></span> Pago / Baixado</span>
+        <span class="legend-item"><span class="legend-box pendente"></span> Pendente / A Vencer</span>
+        <span class="legend-item"><span class="legend-box duvida"></span> Dúvida / Em Análise</span>
+        <span class="legend-item"><span class="legend-box agendado"></span> Agendado (Débito/Cartão)</span>
+        <span class="legend-item"><span class="legend-box weekend"></span> Final de Semana (Sáb/Dom)</span>
+      </footer>
+    </main>
+  </div>
+
+  <!-- MODAL 1: Apontamento da Agenda (Idêntico à Imagem 2) -->
+  <div class="modal-overlay" id="modal-cell-appointment" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Apontamento da Agenda</h2>
+        <button class="modal-close" id="btn-close-appointment">&times;</button>
+      </div>
+      
+      <div class="modal-body">
+        <!-- Header Info Box (Consultor/Conta & Data) -->
+        <div class="info-card-header">
+          <div class="info-row">
+            <span class="info-label">Despesa / Conta:</span>
+            <span class="info-value text-bold" id="modal-cell-account-name">-</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Data de Vencimento/Apontamento:</span>
+            <span class="info-value text-bold" id="modal-cell-date-display">01/09/2026</span>
+          </div>
+        </div>
+
+        <form id="form-appointment">
+          <input type="hidden" id="modal-cell-conta-id">
+          <input type="hidden" id="modal-cell-date-raw">
+
+          <div class="form-group">
+            <label for="modal-cell-valor">Valor da Conta (R$)</label>
+            <input type="number" step="0.01" id="modal-cell-valor" placeholder="0,00" class="form-input" required>
+          </div>
+
+          <div class="form-group">
+            <label for="modal-cell-status">Status da Célula</label>
+            <select id="modal-cell-status" class="form-input">
+              <option value="pendente">Normal (Pendente)</option>
+              <option value="pago">Pago (Baixado)</option>
+              <option value="agendado">Agendado (Cartão / Débito)</option>
+              <option value="vencido">Dúvida / Em Análise (Alerta)</option>
+              <option value="isento">Isento / Sem Cobrança</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="modal-cell-tipo-pagamento">Tipo de Pagamento</label>
+            <select id="modal-cell-tipo-pagamento" class="form-input">
+              <option value="boleto">Boleto Bancário</option>
+              <option value="cartao">Cartão de Crédito</option>
+              <option value="debito_conta">Débito em Conta</option>
+              <option value="pix">PIX Instantâneo</option>
+              <option value="dinheiro">Dinheiro / Cheque</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="modal-cell-observacao">Observação / Motivo (Exibe marcador na célula)</label>
+            <textarea id="modal-cell-observacao" rows="3" class="form-input" placeholder="Ex: Código de barras gerado, pago pelo App Itaú, comprovante #1234"></textarea>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-danger-link" id="btn-delete-appointment"><i class="fa-solid fa-trash"></i> Limpar Célula</button>
+        <div class="footer-buttons-right">
+          <button type="button" class="btn-cancel" id="btn-cancel-appointment">Cancelar</button>
+          <button type="button" class="btn-submit" id="btn-save-appointment">Salvar Apontamento</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: Cadastro / Edição de Conta / Despesa -->
+  <div class="modal-overlay" id="modal-conta" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="modal-conta-title">Nova Conta a Pagar</h2>
+        <button class="modal-close" id="btn-close-conta">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <form id="form-conta">
+          <input type="hidden" id="modal-conta-id">
+
+          <div class="form-group">
+            <label for="modal-conta-nome">Nome da Despesa / Conta *</label>
+            <input type="text" id="modal-conta-nome" class="form-input" placeholder="Ex: Aluguel do Escritório" required>
+          </div>
+
+          <div class="form-group">
+            <label for="modal-conta-descricao">Descrição Detalhada</label>
+            <input type="text" id="modal-conta-descricao" class="form-input" placeholder="Ex: Contrato de Locação Sede">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-6">
+              <label for="modal-conta-categoria">Categoria</label>
+              <select id="modal-conta-categoria" class="form-input">
+                <option value="Infraestrutura">Infraestrutura</option>
+                <option value="Utilidades">Utilidades</option>
+                <option value="TI">TI & Sistemas</option>
+                <option value="Pessoal">Pessoal</option>
+                <option value="Impostos">Impostos</option>
+                <option value="Serviços">Serviços</option>
+                <option value="Geral">Geral</option>
+              </select>
+            </div>
+
+            <div class="form-group col-6">
+              <label for="modal-conta-dia-fixo">Dia de Venc. Fixo (1 a 31)</label>
+              <input type="number" id="modal-conta-dia-fixo" min="1" max="31" class="form-input" placeholder="Ex: 10">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="modal-conta-valor">Valor Padrão (R$)</label>
+            <input type="number" step="0.01" id="modal-conta-valor" class="form-input" placeholder="0,00">
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" id="btn-cancel-conta">Cancelar</button>
+        <button type="button" class="btn-submit" id="btn-save-conta">Salvar Conta</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
