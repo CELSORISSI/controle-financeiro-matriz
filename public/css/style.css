@@ -519,6 +519,27 @@ body {
   color: var(--accent-cyan);
 }
 
+.badge-categoria {
+  background-color: rgba(0, 132, 255, 0.12);
+  color: #60a5fa;
+  border: 1px solid rgba(0, 132, 255, 0.25);
+  padding: 0.2rem 0.45rem;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.th-sortable {
+  user-select: none;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.th-sortable:hover {
+  background-color: #1a2a47 !important;
+  color: #ffffff !important;
+}
+
 /* Cell Interactive Item */
 .cell-day {
   cursor: pointer;

@@ -9,6 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
   let apontamentos = [];
   let activeCellData = null;
 
+  // State de Ordenação da Grade Fixa (A-Z / Z-A)
+  let currentSortField = 'nome'; // 'nome', 'descricao', 'categoria', 'data_vencimento', 'dia_vencimento_fixo'
+  let currentSortOrder = 'asc';  // 'asc' (A-Z) ou 'desc' (Z-A)
+
   // DOM Elements
   const elCurrentMonthLabel = document.getElementById('current-month-label');
   const elTableMonthBadge = document.getElementById('table-month-badge');
@@ -184,18 +188,29 @@ document.addEventListener('DOMContentLoaded', () => {
       weekGroups.push({ weekNum: currentWeekNum, count: currentWeekDays });
     }
 
-    // 1. Render Table Header (2 Rows)
+    // Helper para ícones de ordenação
+    function getSortIcon(field) {
+      if (currentSortField !== field) {
+        return '<i class="fa-solid fa-sort" style="opacity: 0.3; margin-left: 4px; font-size: 0.7rem;"></i>';
+      }
+      return currentSortOrder === 'asc' 
+        ? '<i class="fa-solid fa-arrow-down-a-z" style="color: var(--accent-blue); margin-left: 4px; font-size: 0.75rem;"></i>' 
+        : '<i class="fa-solid fa-arrow-up-z-a" style="color: var(--accent-blue); margin-left: 4px; font-size: 0.75rem;"></i>';
+    }
+
+    // 1. Render Table Header (2 Rows com Categoria Fixa e Ordenação)
     let theadHTML = `
       <tr>
-        <th colspan="5" class="th-fixed-col">Agenda de Contas & Vencimentos</th>
+        <th colspan="6" class="th-fixed-col">Agenda de Contas & Vencimentos</th>
         ${weekGroups.map(w => `<th colspan="${w.count}" class="th-week-group">Sem. ${w.weekNum}</th>`).join('')}
       </tr>
       <tr>
-        <th class="th-fixed-col" style="min-width: 180px;">Despesa</th>
-        <th class="th-fixed-col" style="min-width: 160px;">Descrição</th>
-        <th class="th-fixed-col" style="min-width: 90px;">Data Venc.</th>
-        <th class="th-fixed-col" style="min-width: 70px;">Venc. Fixo</th>
-        <th class="th-fixed-col" style="min-width: 60px;">Ações</th>
+        <th class="th-fixed-col th-sortable" data-sort-field="nome" style="min-width: 170px; cursor: pointer;">Despesa ${getSortIcon('nome')}</th>
+        <th class="th-fixed-col th-sortable" data-sort-field="descricao" style="min-width: 150px; cursor: pointer;">Descrição ${getSortIcon('descricao')}</th>
+        <th class="th-fixed-col th-sortable" data-sort-field="categoria" style="min-width: 110px; cursor: pointer;">Categoria ${getSortIcon('categoria')}</th>
+        <th class="th-fixed-col th-sortable" data-sort-field="data_vencimento" style="min-width: 90px; cursor: pointer; text-align: center;">Data Venc. ${getSortIcon('data_vencimento')}</th>
+        <th class="th-fixed-col th-sortable" data-sort-field="dia_vencimento_fixo" style="min-width: 80px; cursor: pointer; text-align: center;">Venc. Fixo ${getSortIcon('dia_vencimento_fixo')}</th>
+        <th class="th-fixed-col" style="min-width: 55px; text-align: center;">Ações</th>
         ${days.map(d => `
           <th style="min-width: 48px;" class="${d.isWeekend ? 'cell-weekend' : ''}">
             <div>${d.dayNumber}</div>
@@ -211,10 +226,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const catVal = elFilterCategoria.value;
     const tipoVal = elFilterTipoPagamento.value;
 
-    const filteredContas = contas.filter(c => {
+    let filteredContas = contas.filter(c => {
       const matchSearch = c.nome.toLowerCase().includes(searchVal) || (c.descricao && c.descricao.toLowerCase().includes(searchVal));
       const matchCat = !catVal || c.categoria === catVal;
       return matchSearch && matchCat;
+    });
+
+    // Aplicar Ordenação A-Z / Z-A na Grade Fixa
+    filteredContas.sort((a, b) => {
+      let valA = a[currentSortField];
+      let valB = b[currentSortField];
+
+      if (valA === null || valA === undefined) valA = '';
+      if (valB === null || valB === undefined) valB = '';
+
+      if (typeof valA === 'number' && typeof valB === 'number') {
+        return currentSortOrder === 'asc' ? valA - valB : valB - valA;
+      }
+
+      valA = String(valA).toLowerCase();
+      valB = String(valB).toLowerCase();
+
+      if (valA < valB) return currentSortOrder === 'asc' ? -1 : 1;
+      if (valA > valB) return currentSortOrder === 'asc' ? 1 : -1;
+      return 0;
     });
 
     // Create Quick Lookup Map for Apontamentos
@@ -240,6 +275,9 @@ document.addEventListener('DOMContentLoaded', () => {
           </td>
           <td class="td-fixed">
             <div class="conta-desc">${escapeHTML(conta.descricao || '-')}</div>
+          </td>
+          <td class="td-fixed">
+            <span class="badge-categoria">${escapeHTML(conta.categoria || 'Geral')}</span>
           </td>
           <td class="td-fixed" style="text-align: center;">${dataVencDisplay}</td>
           <td class="td-fixed" style="text-align: center;">
@@ -294,10 +332,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (filteredContas.length === 0) {
-      tbodyHTML = `<tr><td colspan="${5 + days.length}" style="text-align: center; padding: 2rem; color: var(--text-secondary);">Nenhuma conta encontrada para o filtro.</td></tr>`;
+      tbodyHTML = `<tr><td colspan="${6 + days.length}" style="text-align: center; padding: 2rem; color: var(--text-secondary);">Nenhuma conta encontrada para o filtro.</td></tr>`;
     }
 
     elTbody.innerHTML = tbodyHTML;
+
+    // Attach Header Sort Click Listeners
+    document.querySelectorAll('.th-sortable').forEach(th => {
+      th.addEventListener('click', () => {
+        const field = th.getAttribute('data-sort-field');
+        if (currentSortField === field) {
+          currentSortOrder = currentSortOrder === 'asc' ? 'desc' : 'asc';
+        } else {
+          currentSortField = field;
+          currentSortOrder = 'asc';
+        }
+        renderMatrix();
+      });
+    });
 
     // Attach Cell Click Events
     document.querySelectorAll('.cell-day').forEach(cell => {
