@@ -15,15 +15,28 @@ router.get('/', (req, res) => {
 
 // POST /api/contas - Criar nova conta
 router.post('/', (req, res) => {
-  const { nome, descricao, categoria, data_vencimento, dia_vencimento_fixo, valor_padrao } = req.body;
+  const { 
+    nome, 
+    descricao, 
+    categoria, 
+    data_vencimento, 
+    dia_vencimento_fixo, 
+    valor_padrao,
+    tipo_recorrencia,
+    total_parcelas,
+    mes_inicio
+  } = req.body;
   
   if (!nome) {
     return res.status(400).json({ error: 'O nome da despesa/conta é obrigatório.' });
   }
 
   const query = `
-    INSERT INTO contas (nome, descricao, categoria, data_vencimento, dia_vencimento_fixo, valor_padrao)
-    VALUES (?, ?, ?, ?, ?, ?)
+    INSERT INTO contas (
+      nome, descricao, categoria, data_vencimento, dia_vencimento_fixo, valor_padrao,
+      tipo_recorrencia, total_parcelas, mes_inicio
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   db.run(
@@ -34,7 +47,10 @@ router.post('/', (req, res) => {
       categoria || 'Geral',
       data_vencimento || null,
       dia_vencimento_fixo ? parseInt(dia_vencimento_fixo) : null,
-      valor_padrao ? parseFloat(valor_padrao) : 0
+      valor_padrao ? parseFloat(valor_padrao) : 0,
+      tipo_recorrencia || 'mensal',
+      total_parcelas ? parseInt(total_parcelas) : 1,
+      mes_inicio || '2026-09'
     ],
     function (err) {
       if (err) {
@@ -47,7 +63,10 @@ router.post('/', (req, res) => {
         categoria,
         data_vencimento,
         dia_vencimento_fixo,
-        valor_padrao
+        valor_padrao,
+        tipo_recorrencia: tipo_recorrencia || 'mensal',
+        total_parcelas: total_parcelas || 1,
+        mes_inicio: mes_inicio || '2026-09'
       });
     }
   );
@@ -56,11 +75,22 @@ router.post('/', (req, res) => {
 // PUT /api/contas/:id - Atualizar conta existente
 router.put('/:id', (req, res) => {
   const { id } = req.params;
-  const { nome, descricao, categoria, data_vencimento, dia_vencimento_fixo, valor_padrao } = req.body;
+  const { 
+    nome, 
+    descricao, 
+    categoria, 
+    data_vencimento, 
+    dia_vencimento_fixo, 
+    valor_padrao,
+    tipo_recorrencia,
+    total_parcelas,
+    mes_inicio
+  } = req.body;
 
   const query = `
     UPDATE contas 
-    SET nome = ?, descricao = ?, categoria = ?, data_vencimento = ?, dia_vencimento_fixo = ?, valor_padrao = ?
+    SET nome = ?, descricao = ?, categoria = ?, data_vencimento = ?, dia_vencimento_fixo = ?, valor_padrao = ?,
+        tipo_recorrencia = ?, total_parcelas = ?, mes_inicio = ?
     WHERE id = ?
   `;
 
@@ -73,6 +103,9 @@ router.put('/:id', (req, res) => {
       data_vencimento,
       dia_vencimento_fixo ? parseInt(dia_vencimento_fixo) : null,
       valor_padrao ? parseFloat(valor_padrao) : 0,
+      tipo_recorrencia || 'mensal',
+      total_parcelas ? parseInt(total_parcelas) : 1,
+      mes_inicio || '2026-09',
       id
     ],
     function (err) {

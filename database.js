@@ -22,10 +22,18 @@ db.serialize(() => {
       data_vencimento TEXT,
       dia_vencimento_fixo INTEGER,
       valor_padrao REAL DEFAULT 0,
+      tipo_recorrencia TEXT DEFAULT 'mensal',
+      total_parcelas INTEGER DEFAULT 1,
+      mes_inicio TEXT DEFAULT '2026-09',
       ativo INTEGER DEFAULT 1,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
+
+  // Migrações seguras de colunas existentes
+  db.run(`ALTER TABLE contas ADD COLUMN tipo_recorrencia TEXT DEFAULT 'mensal'`, () => {});
+  db.run(`ALTER TABLE contas ADD COLUMN total_parcelas INTEGER DEFAULT 1`, () => {});
+  db.run(`ALTER TABLE contas ADD COLUMN mes_inicio TEXT DEFAULT '2026-09'`, () => {});
 
   // Tabela de Apontamentos Diários (Lançamentos por célula)
   db.run(`

@@ -64,6 +64,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const elModalContaDiaFixo = document.getElementById('modal-conta-dia-fixo');
   const elModalContaValor = document.getElementById('modal-conta-valor');
 
+  const elModalContaTipoRecorrencia = document.getElementById('modal-conta-tipo-recorrencia');
+  const elModalContaTotalParcelas = document.getElementById('modal-conta-total-parcelas');
+  const elModalContaMesInicio = document.getElementById('modal-conta-mes-inicio');
+  const elContainerParceladoFields = document.getElementById('container-parcelado-fields');
+
   // --- Initialize App ---
   init();
 
@@ -104,6 +109,10 @@ document.addEventListener('DOMContentLoaded', () => {
     elBtnCloseConta.addEventListener('click', closeContaModal);
     elBtnCancelConta.addEventListener('click', closeContaModal);
     elBtnSaveConta.addEventListener('click', saveConta);
+
+    elModalContaTipoRecorrencia.addEventListener('change', () => {
+      elContainerParceladoFields.style.display = (elModalContaTipoRecorrencia.value === 'parcelado') ? 'flex' : 'none';
+    });
   }
 
   // Load Data from API
@@ -299,6 +308,30 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
 
+        // Calcular se o vencimento é ativo neste mês (Recorrência Mensal ou Parcelado 20x/40x)
+        let isDueDateActive = false;
+        let parcelaTagText = '';
+
+        if (conta.dia_vencimento_fixo === d.dayNumber) {
+          if (!conta.tipo_recorrencia || conta.tipo_recorrencia === 'mensal') {
+            isDueDateActive = true;
+          } else if (conta.tipo_recorrencia === 'parcelado') {
+            const startStr = conta.mes_inicio || '2026-09';
+            const parts = startStr.split('-');
+            const sYear = parseInt(parts[0]) || year;
+            const sMonth = (parseInt(parts[1]) || (month + 1)) - 1; // 0-indexed
+
+            const diffMonths = (year - sYear) * 12 + (month - sMonth);
+            const pAtual = diffMonths + 1;
+            const pTotal = conta.total_parcelas || 1;
+
+            if (pAtual >= 1 && pAtual <= pTotal) {
+              isDueDateActive = true;
+              parcelaTagText = `${String(pAtual).padStart(2, '0')}/${pTotal}`;
+            }
+          }
+        }
+
         let cellContentClass = 'empty';
         let cellText = '';
         let cellTag = '';
@@ -307,11 +340,14 @@ document.addEventListener('DOMContentLoaded', () => {
           cellContentClass = apon.status || 'pendente';
           cellText = formatValorShort(apon.valor);
           cellTag = getTipoPagamentoTag(apon.tipo_pagamento);
-        } else if (conta.dia_vencimento_fixo === d.dayNumber) {
-          // If no explicitly saved cell, but matches fixed due day: highlight as due day
+          if (parcelaTagText) {
+            cellTag += ` (${parcelaTagText})`;
+          }
+        } else if (isDueDateActive) {
+          // Célula gerada automaticamente por recorrência/parcela no dia fixo
           cellContentClass = 'pendente';
           cellText = formatValorShort(conta.valor_padrao);
-          cellTag = 'VENC';
+          cellTag = parcelaTagText ? `P.${parcelaTagText}` : 'VENC';
         }
 
         tbodyHTML += `
@@ -505,6 +541,9 @@ document.addEventListener('DOMContentLoaded', () => {
       elModalContaCategoria.value = conta.categoria || 'Geral';
       elModalContaDiaFixo.value = conta.dia_vencimento_fixo || '';
       elModalContaValor.value = conta.valor_padrao || '';
+      elModalContaTipoRecorrencia.value = conta.tipo_recorrencia || 'mensal';
+      elModalContaTotalParcelas.value = conta.total_parcelas || 20;
+      elModalContaMesInicio.value = conta.mes_inicio || '2026-09';
     } else {
       elModalContaTitle.textContent = 'Nova Conta a Pagar';
       elModalContaIdInput.value = '';
@@ -513,7 +552,11 @@ document.addEventListener('DOMContentLoaded', () => {
       elModalContaCategoria.value = 'Geral';
       elModalContaDiaFixo.value = '';
       elModalContaValor.value = '';
+      elModalContaTipoRecorrencia.value = 'mensal';
+      elModalContaTotalParcelas.value = 20;
+      elModalContaMesInicio.value = '2026-09';
     }
+    elContainerParceladoFields.style.display = (elModalContaTipoRecorrencia.value === 'parcelado') ? 'flex' : 'none';
     elModalConta.style.display = 'flex';
   }
 
@@ -528,13 +571,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const categoria = elModalContaCategoria.value;
     const dia_vencimento_fixo = elModalContaDiaFixo.value ? parseInt(elModalContaDiaFixo.value) : null;
     const valor_padrao = parseFloat(elModalContaValor.value) || 0;
+    const tipo_recorrencia = elModalContaTipoRecorrencia.value;
+    const total_parcelas = parseInt(elModalContaTotalParcelas.value) || 1;
+    const mes_inicio = elModalContaMesInicio.value || '2026-09';
 
     if (!nome) {
       alert('O nome da conta é obrigatório.');
       return;
     }
 
-    const payload = { nome, descricao, categoria, dia_vencimento_fixo, valor_padrao };
+    const payload = { 
+      nome, 
+      descricao, 
+      categoria, 
+      dia_vencimento_fixo, 
+      valor_padrao,
+      tipo_recorrencia,
+      total_parcelas,
+      mes_inicio
+    };
 
     try {
       let res;
