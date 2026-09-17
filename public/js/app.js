@@ -71,7 +71,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const elModalContaTipoRecorrencia = document.getElementById('modal-conta-tipo-recorrencia');
   const elModalContaTotalParcelas = document.getElementById('modal-conta-total-parcelas');
   const elModalContaMesInicio = document.getElementById('modal-conta-mes-inicio');
+  const elModalContaDataVencimento = document.getElementById('modal-conta-data-vencimento');
   const elContainerParceladoFields = document.getElementById('container-parcelado-fields');
+  const elContainerNaoRecorrenteFields = document.getElementById('container-nao-recorrente-fields');
 
   // --- Initialize App ---
   init();
@@ -115,7 +117,9 @@ document.addEventListener('DOMContentLoaded', () => {
     elBtnSaveConta.addEventListener('click', saveConta);
 
     elModalContaTipoRecorrencia.addEventListener('change', () => {
-      elContainerParceladoFields.style.display = (elModalContaTipoRecorrencia.value === 'parcelado') ? 'flex' : 'none';
+      const val = elModalContaTipoRecorrencia.value;
+      elContainerParceladoFields.style.display = (val === 'parcelado') ? 'flex' : 'none';
+      elContainerNaoRecorrenteFields.style.display = (val === 'nao_recorrente') ? 'block' : 'none';
     });
   }
 
@@ -366,13 +370,24 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
 
+        // Calcular se o vencimento é ativo neste dia (Mensal, Parcelado 20x/40x ou Não Recorrente/Único)
         let isDueDateActive = false;
         let parcelaTagText = '';
+        const pTipo = parentConta.tipo_recorrencia || 'mensal';
 
-        if (parentConta.dia_vencimento_fixo === d.dayNumber) {
-          if (!parentConta.tipo_recorrencia || parentConta.tipo_recorrencia === 'mensal') {
-            isDueDateActive = true;
-          } else if (parentConta.tipo_recorrencia === 'parcelado') {
+        if (pTipo === 'nao_recorrente') {
+          if (parentConta.data_vencimento) {
+            isDueDateActive = (d.dateStr === parentConta.data_vencimento);
+          } else if (parentConta.dia_vencimento_fixo) {
+            const targetMonthStr = parentConta.mes_inicio || '2026-09';
+            const targetDateStr = `${targetMonthStr}-${String(parentConta.dia_vencimento_fixo).padStart(2, '0')}`;
+            isDueDateActive = (d.dateStr === targetDateStr);
+          }
+          if (isDueDateActive) parcelaTagText = 'ÚNICO';
+        } else if (pTipo === 'mensal') {
+          isDueDateActive = (parentConta.dia_vencimento_fixo === d.dayNumber);
+        } else if (pTipo === 'parcelado') {
+          if (parentConta.dia_vencimento_fixo === d.dayNumber) {
             const startStr = parentConta.mes_inicio || '2026-09';
             const parts = startStr.split('-');
             const sYear = parseInt(parts[0]) || year;
@@ -467,8 +482,39 @@ document.addEventListener('DOMContentLoaded', () => {
               return;
             }
 
+            let isDueDateActive = false;
+            let childTagText = '';
+            const cTipo = child.tipo_recorrencia || 'mensal';
             const targetDiaFixo = child.dia_vencimento_fixo || parentConta.dia_vencimento_fixo;
-            let isDueDateActive = (targetDiaFixo === d.dayNumber);
+
+            if (cTipo === 'nao_recorrente') {
+              if (child.data_vencimento) {
+                isDueDateActive = (d.dateStr === child.data_vencimento);
+              } else if (targetDiaFixo) {
+                const targetMonthStr = child.mes_inicio || '2026-09';
+                const targetDateStr = `${targetMonthStr}-${String(targetDiaFixo).padStart(2, '0')}`;
+                isDueDateActive = (d.dateStr === targetDateStr);
+              }
+              if (isDueDateActive) childTagText = 'ÚNICO';
+            } else if (cTipo === 'mensal') {
+              isDueDateActive = (targetDiaFixo === d.dayNumber);
+            } else if (cTipo === 'parcelado') {
+              if (targetDiaFixo === d.dayNumber) {
+                const startStr = child.mes_inicio || '2026-09';
+                const parts = startStr.split('-');
+                const sYear = parseInt(parts[0]) || year;
+                const sMonth = (parseInt(parts[1]) || (month + 1)) - 1;
+
+                const diffMonths = (year - sYear) * 12 + (month - sMonth);
+                const pAtual = diffMonths + 1;
+                const pTotal = child.total_parcelas || 1;
+
+                if (pAtual >= 1 && pAtual <= pTotal) {
+                  isDueDateActive = true;
+                  childTagText = `${String(pAtual).padStart(2, '0')}/${pTotal}`;
+                }
+              }
+            }
 
             let cellContentClass = 'empty';
             let cellText = '';
@@ -481,7 +527,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (isDueDateActive) {
               cellContentClass = 'pendente';
               cellText = formatValorShort(child.valor_padrao);
-              cellTag = 'ITEM';
+              cellTag = childTagText || 'ITEM';
             }
 
             tbodyHTML += `
@@ -708,6 +754,7 @@ document.addEventListener('DOMContentLoaded', () => {
       elModalContaTipoRecorrencia.value = conta.tipo_recorrencia || 'mensal';
       elModalContaTotalParcelas.value = conta.total_parcelas || 20;
       elModalContaMesInicio.value = conta.mes_inicio || '2026-09';
+      elModalContaDataVencimento.value = conta.data_vencimento || '';
     } else {
       elModalContaTitle.textContent = presetParentId ? 'Nova Sub-despesa' : 'Nova Conta a Pagar';
       elModalContaIdInput.value = '';
@@ -720,8 +767,13 @@ document.addEventListener('DOMContentLoaded', () => {
       elModalContaTipoRecorrencia.value = 'mensal';
       elModalContaTotalParcelas.value = 20;
       elModalContaMesInicio.value = '2026-09';
+      elModalContaDataVencimento.value = '';
     }
-    elContainerParceladoFields.style.display = (elModalContaTipoRecorrencia.value === 'parcelado') ? 'flex' : 'none';
+
+    const recVal = elModalContaTipoRecorrencia.value;
+    elContainerParceladoFields.style.display = (recVal === 'parcelado') ? 'flex' : 'none';
+    elContainerNaoRecorrenteFields.style.display = (recVal === 'nao_recorrente') ? 'block' : 'none';
+
     elModalConta.style.display = 'flex';
   }
 
@@ -740,6 +792,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const tipo_recorrencia = elModalContaTipoRecorrencia.value;
     const total_parcelas = parseInt(elModalContaTotalParcelas.value) || 1;
     const mes_inicio = elModalContaMesInicio.value || '2026-09';
+    const data_vencimento = elModalContaDataVencimento.value || null;
 
     if (!nome) {
       alert('O nome da conta é obrigatório.');
@@ -755,7 +808,8 @@ document.addEventListener('DOMContentLoaded', () => {
       valor_padrao,
       tipo_recorrencia,
       total_parcelas,
-      mes_inicio
+      mes_inicio,
+      data_vencimento
     };
 
     try {

@@ -308,8 +308,14 @@
             <label for="modal-conta-tipo-recorrencia">Tipo de Recorrência / Lançamento</label>
             <select id="modal-conta-tipo-recorrencia" class="form-input">
               <option value="mensal">Mensal Contínua (Recorrente todo mês)</option>
+              <option value="nao_recorrente">Não Recorrente (Vencimento Único / Pontual)</option>
               <option value="parcelado">Parcelado (Número Fixo de Parcelas, ex: 20x, 40x)</option>
             </select>
+          </div>
+
+          <div id="container-nao-recorrente-fields" class="form-group" style="display: none;">
+            <label for="modal-conta-data-vencimento">Data Específica do Vencimento (Apenas neste dia/mês)</label>
+            <input type="date" id="modal-conta-data-vencimento" class="form-input">
           </div>
 
           <div id="container-parcelado-fields" class="form-row" style="display: none;">
