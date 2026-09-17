@@ -4,7 +4,7 @@ const db = require('../database');
 
 // GET /api/contas - Listar todas as contas
 router.get('/', (req, res) => {
-  const query = `SELECT * FROM contas WHERE ativo = 1 ORDER BY dia_vencimento_fixo ASC, nome ASC`;
+  const query = `SELECT * FROM contas WHERE ativo = 1 ORDER BY COALESCE(dia_vencimento_fixo, 1) ASC, nome ASC`;
   db.all(query, [], (err, rows) => {
     if (err) {
       return res.status(500).json({ error: err.message });

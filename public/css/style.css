@@ -3,47 +3,53 @@
    ========================================================================== */
 
 :root {
-  --bg-dark-app: #0d1527;
-  --bg-dark-sidebar: #090e1a;
-  --bg-dark-card: #141e33;
-  --bg-dark-hover: #1c2b47;
-  --bg-dark-table-header: #101b30;
-  --bg-dark-modal: #16233b;
-  --border-color: #1e2d4a;
-  --border-color-light: #2c3f66;
+  --bg-dark-app: #ffffff;
+  --bg-dark-sidebar: #060a14;
+  --bg-dark-card: #0f192d;
+  --bg-dark-hover: #17243e;
+  --bg-dark-table-header: #004b87;
+  --bg-dark-modal: #132038;
+  --border-color: #1a2942;
+  --border-color-light: #253859;
   
   --text-primary: #e2e8f0;
-  --text-secondary: #8a99ad;
-  --text-muted: #5e6e85;
+  --text-secondary: #8b9bb4;
+  --text-muted: #52637f;
 
-  --accent-blue: #0084ff;
-  --accent-blue-hover: #006dd3;
-  --accent-green: #22c55e;
-  --accent-amber: #eab308;
-  --accent-purple: #a855f7;
+  --accent-blue: #0070ba;
+  --accent-blue-hover: #005a96;
+  --accent-green: #10b981;
+  --accent-amber: #f59e0b;
+  --accent-purple: #8b5cf6;
   --accent-red: #ef4444;
   --accent-cyan: #06b6d4;
 
-  /* Cell Status Colors */
-  --cell-pago-bg: #15803d;
-  --cell-pago-text: #ffffff;
+  /* Cell Status Colors - Badges Soft Pastel (Fidelidade total à Imagem GLOVIS) */
+  --cell-pago-bg: #dcfce7;
+  --cell-pago-text: #15803d;
+  --cell-pago-border: #bbf7d0;
   
-  --cell-pendente-bg: #ca8a04;
-  --cell-pendente-text: #ffffff;
+  --cell-pendente-bg: #fef3c7;
+  --cell-pendente-text: #b45309;
+  --cell-pendente-border: #fde68a;
 
-  --cell-agendado-bg: #3b82f6;
-  --cell-agendado-text: #ffffff;
+  --cell-agendado-bg: #e0f2fe;
+  --cell-agendado-text: #0369a1;
+  --cell-agendado-border: #bae6fd;
 
-  --cell-vencido-bg: #dc2626;
-  --cell-vencido-text: #ffffff;
+  --cell-vencido-bg: #fee2e2;
+  --cell-vencido-text: #b91c1c;
+  --cell-vencido-border: #fca5a5;
 
-  --cell-duvida-bg: #ea580c;
-  --cell-duvida-text: #ffffff;
+  --cell-duvida-bg: #ffedd5;
+  --cell-duvida-text: #c2410c;
+  --cell-duvida-border: #fed7aa;
 
-  --cell-isento-bg: #9333ea;
-  --cell-isento-text: #ffffff;
+  --cell-isento-bg: #f3e8ff;
+  --cell-isento-text: #7e22ce;
+  --cell-isento-border: #e9d5ff;
 
-  --cell-weekend-bg: #f1f5f9;
+  --cell-weekend-bg: #f8fafc;
 }
 
 * {
@@ -219,6 +225,7 @@ body {
 }
 
 /* KPI Summary Grid (Escuro) */
+/* KPI Summary Grid (Cores sólidas, claras e amigáveis) */
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -227,18 +234,31 @@ body {
 }
 
 .kpi-card {
-  background-color: var(--bg-dark-card);
-  border: 1px solid var(--border-color);
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
   border-radius: 8px;
   padding: 1rem;
   display: flex;
   align-items: center;
   gap: 1rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+  transition: transform 0.15s, box-shadow 0.15s;
 }
 
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.kpi-card:nth-child(1) { background-color: #f0f7ff; border-color: #bae6fd; }
+.kpi-card:nth-child(2) { background-color: #f0fdf4; border-color: #bbf7d0; }
+.kpi-card:nth-child(3) { background-color: #ecfeff; border-color: #a5f3fc; }
+.kpi-card:nth-child(4) { background-color: #faf5ff; border-color: #e9d5ff; }
+.kpi-card:nth-child(5) { background-color: #fffbeb; border-color: #fef08a; }
+
 .kpi-icon {
-  width: 46px;
-  height: 46px;
+  width: 44px;
+  height: 44px;
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -247,11 +267,11 @@ body {
   flex-shrink: 0;
 }
 
-.kpi-icon.blue { background-color: rgba(0, 132, 255, 0.15); color: var(--accent-blue); }
-.kpi-icon.green { background-color: rgba(34, 197, 94, 0.15); color: var(--accent-green); }
-.kpi-icon.cyan { background-color: rgba(6, 182, 212, 0.15); color: var(--accent-cyan); }
-.kpi-icon.purple { background-color: rgba(168, 85, 247, 0.15); color: var(--accent-purple); }
-.kpi-icon.amber { background-color: rgba(234, 179, 8, 0.15); color: var(--accent-amber); }
+.kpi-icon.blue { background-color: #0284c7; color: #ffffff; }
+.kpi-icon.green { background-color: #16a34a; color: #ffffff; }
+.kpi-icon.cyan { background-color: #0891b2; color: #ffffff; }
+.kpi-icon.purple { background-color: #9333ea; color: #ffffff; }
+.kpi-icon.amber { background-color: #d97706; color: #ffffff; }
 
 .kpi-info {
   display: flex;
@@ -261,8 +281,8 @@ body {
 
 .kpi-value {
   font-size: 1.15rem;
-  font-weight: 700;
-  color: #ffffff;
+  font-weight: 800;
+  color: #0f172a;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -271,15 +291,16 @@ body {
 .kpi-label {
   font-size: 0.65rem;
   font-weight: 700;
-  color: var(--text-secondary);
+  color: #475569;
   letter-spacing: 0.8px;
   margin-top: 0.15rem;
+  text-transform: uppercase;
 }
 
-/* Filter Toolbar (Escuro) */
+/* Filter Toolbar (Barra Clara - Destacada do Fundo e dos Componentes da Grade) */
 .filter-toolbar {
-  background-color: var(--bg-dark-card);
-  border: 1px solid var(--border-color);
+  background-color: #f1f5f9;
+  border: 1px solid #cbd5e1;
   border-radius: 8px;
   padding: 0.85rem 1.25rem;
   display: flex;
@@ -287,6 +308,7 @@ body {
   gap: 1rem;
   flex-wrap: wrap;
   margin-bottom: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .date-navigator {
@@ -296,11 +318,11 @@ body {
 }
 
 .btn-icon {
-  background-color: var(--bg-dark-hover);
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
-  width: 30px;
-  height: 30px;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  width: 32px;
+  height: 32px;
   border-radius: 6px;
   cursor: pointer;
   display: inline-flex;
@@ -318,49 +340,57 @@ body {
 .current-month-display {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #ffffff;
+  color: #0f172a;
   min-width: 140px;
   text-align: center;
 }
 
 .btn-secondary {
-  background-color: var(--bg-dark-hover);
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #1e293b;
   padding: 0.45rem 0.85rem;
   border-radius: 6px;
   font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.2s;
 }
 
 .btn-secondary:hover {
-  border-color: var(--text-secondary);
+  background-color: #e2e8f0;
+  border-color: #94a3b8;
 }
 
 .search-box {
   display: flex;
   align-items: center;
-  background-color: #0b1220;
-  border: 1px solid var(--border-color);
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
   border-radius: 6px;
-  padding: 0.4rem 0.75rem;
+  padding: 0.45rem 0.85rem;
   flex: 1;
-  min-width: 200px;
+  min-width: 220px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
 .search-box i {
-  color: var(--text-muted);
-  margin-right: 0.5rem;
+  color: #64748b;
+  margin-right: 0.6rem;
 }
 
 .search-box input {
   background: none;
   border: none;
   outline: none;
-  color: #ffffff;
+  color: #0f172a;
+  font-weight: 500;
   font-size: 0.85rem;
   width: 100%;
+}
+
+.search-box input::placeholder {
+  color: #94a3b8;
 }
 
 .filter-dropdowns {
@@ -369,14 +399,16 @@ body {
 }
 
 .filter-dropdowns select {
-  background-color: #0b1220;
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+  font-weight: 500;
   padding: 0.45rem 0.75rem;
   border-radius: 6px;
   font-size: 0.8rem;
   outline: none;
   cursor: pointer;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
 .btn-primary {
@@ -392,16 +424,17 @@ body {
   align-items: center;
   gap: 0.5rem;
   transition: background-color 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 112, 186, 0.3);
 }
 
 .btn-primary:hover {
   background-color: var(--accent-blue-hover);
 }
 
-/* Table Title Bar (Escuro) */
+/* Table Title Bar (Estilo Banner GLOVIS) */
 .table-title-bar {
-  background-color: #0e182e;
-  border: 1px solid var(--border-color);
+  background: linear-gradient(90deg, #004b87 0%, #003666 100%);
+  border: 1px solid #005a9e;
   border-bottom: none;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
@@ -412,16 +445,19 @@ body {
 }
 
 .table-title {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: #ffffff;
   letter-spacing: 0.5px;
 }
 
 .table-month-badge {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--accent-blue);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.18);
+  padding: 0.25rem 0.75rem;
+  border-radius: 14px;
 }
 
 /* ==========================================================================
@@ -435,8 +471,9 @@ body {
   border-bottom-right-radius: 8px;
   overflow-x: auto;
   max-width: 100%;
+  min-height: 220px;
   margin-bottom: 1rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .matrix-table {
@@ -454,39 +491,62 @@ body {
   text-align: center;
 }
 
-/* Headers de Semanas e Dias da Tabela */
+/* Headers de Semanas e Dias da Tabela (Fidelidade GLOVIS) */
 .matrix-table thead tr:first-child th {
-  background-color: #f1f5f9;
-  color: #475569;
-  font-size: 0.7rem;
+  background-color: #004b87;
+  color: #ffffff;
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
+  border-color: #005d9e;
 }
 
 .matrix-table thead tr:nth-child(2) th {
   background-color: #e2e8f0;
   color: #0f172a;
-  font-weight: 600;
+  font-weight: 700;
+  border-color: #cbd5e1;
 }
 
 .th-week-group {
-  border-bottom: 2px solid var(--accent-blue) !important;
+  background-color: #004b87 !important;
+  color: #ffffff !important;
+  border-bottom: 2px solid #003666 !important;
 }
 
 .th-day-name {
   font-size: 0.65rem;
-  color: #64748b;
-  font-weight: 400;
+  color: #475569;
+  font-weight: 500;
   display: block;
 }
 
 .th-fixed-col {
   text-align: left !important;
-  background-color: #f8fafc !important;
+  background-color: #f1f5f9 !important;
   color: #0f172a !important;
   position: sticky;
   left: 0;
   z-index: 2;
+  font-weight: 700 !important;
+}
+
+/* Destaque da Coluna do Dia Atual (Today Column Highlight - igual à Imagem) */
+.today-column {
+  background-color: rgba(0, 153, 255, 0.08) !important;
+  border-left: 2px solid #0099ff !important;
+  border-right: 2px solid #0099ff !important;
+}
+
+th.today-column {
+  background-color: #0099ff !important;
+  color: #ffffff !important;
+  border-left: 2px solid #0077cc !important;
+  border-right: 2px solid #0077cc !important;
+}
+
+th.today-column .th-day-name {
+  color: #e0f2fe !important;
 }
 
 /* Corpo da Tabela no Fundo Branco */
@@ -547,13 +607,46 @@ body {
   color: #0f172a !important;
 }
 
-/* Estilos de Sub-contas & Agrupamento de Cartões no Fundo Branco */
+/* Estilos do Acordeão de Sub-contas & Agrupamento de Cartões */
+.btn-accordion-toggle {
+  background-color: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: background-color 0.2s;
+}
+
+.btn-accordion-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
 .tr-parent-conta {
   background-color: #f8fafc;
 }
 
+.tr-parent-conta.accordion-parent-row {
+  border-left: 4px solid var(--accent-blue) !important;
+}
+
 .tr-parent-conta .td-fixed {
   background-color: #f8fafc !important;
+}
+
+.td-accordion-toggle {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.15s;
+}
+
+.td-accordion-toggle:hover {
+  background-color: #e2e8f0 !important;
 }
 
 .tr-sub-conta {
@@ -580,14 +673,17 @@ body {
 }
 
 .badge-sub-count {
-  background-color: #f3e8ff;
-  color: #7e22ce;
-  border: 1px solid #e9d5ff;
-  padding: 0.15rem 0.45rem;
+  background-color: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+  padding: 0.15rem 0.5rem;
   border-radius: 12px;
-  font-size: 0.62rem;
+  font-size: 0.63rem;
   font-weight: 700;
-  margin-left: 0.4rem;
+  margin-left: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
 }
 
 .badge-acumulado {
@@ -601,13 +697,25 @@ body {
 }
 
 .btn-toggle-sub {
-  background: none;
-  border: none;
-  color: var(--accent-blue);
+  background-color: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+  border-radius: 12px;
+  padding: 0.18rem 0.55rem;
+  font-size: 0.65rem;
+  font-weight: 700;
   cursor: pointer;
-  padding: 0.2rem 0.4rem;
-  font-size: 0.75rem;
-  margin-right: 0.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-toggle-sub:hover {
+  background-color: #0070ba;
+  color: #ffffff;
+  border-color: #005a96;
 }
 
 .btn-add-sub {
@@ -675,7 +783,7 @@ body {
   padding: 2px;
 }
 
-/* Cell States */
+/* Cell States com Badges Pastel de Alto Contraste (Estilo GLOVIS) */
 .cell-content.empty {
   background-color: transparent;
   color: #94a3b8;
@@ -684,31 +792,43 @@ body {
 .cell-content.pago {
   background-color: var(--cell-pago-bg);
   color: var(--cell-pago-text);
+  border: 1px solid var(--cell-pago-border);
+  font-weight: 700;
 }
 
 .cell-content.pendente {
   background-color: var(--cell-pendente-bg);
   color: var(--cell-pendente-text);
+  border: 1px solid var(--cell-pendente-border);
+  font-weight: 700;
 }
 
 .cell-content.agendado {
   background-color: var(--cell-agendado-bg);
   color: var(--cell-agendado-text);
+  border: 1px solid var(--cell-agendado-border);
+  font-weight: 700;
 }
 
 .cell-content.vencido {
   background-color: var(--cell-vencido-bg);
   color: var(--cell-vencido-text);
+  border: 1px solid var(--cell-vencido-border);
+  font-weight: 700;
 }
 
 .cell-content.duvida {
   background-color: var(--cell-duvida-bg);
   color: var(--cell-duvida-text);
+  border: 1px solid var(--cell-duvida-border);
+  font-weight: 700;
 }
 
 .cell-content.isento {
   background-color: var(--cell-isento-bg);
   color: var(--cell-isento-text);
+  border: 1px solid var(--cell-isento-border);
+  font-weight: 700;
 }
 
 .cell-day.weekend {
@@ -719,26 +839,26 @@ body {
   font-size: 0.55rem;
   text-transform: uppercase;
   margin-top: 1px;
-  opacity: 0.9;
+  opacity: 0.95;
 }
 
-/* Legend Bar (Escuro) */
+/* Legend Bar (Barra Clara com Badges Pastel) */
 .legend-bar {
-  background-color: var(--bg-dark-card);
-  border: 1px solid var(--border-color);
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
   border-radius: 8px;
   padding: 0.75rem 1.25rem;
   display: flex;
   align-items: center;
   gap: 1.25rem;
   font-size: 0.75rem;
-  color: var(--text-secondary);
+  color: #475569;
   flex-wrap: wrap;
 }
 
 .legend-label {
   font-weight: 700;
-  color: #ffffff;
+  color: #0f172a;
 }
 
 .legend-item {
@@ -753,11 +873,11 @@ body {
   border-radius: 3px;
 }
 
-.legend-box.empty { border: 1px solid var(--border-color-light); }
-.legend-box.pago { background-color: var(--cell-pago-bg); }
-.legend-box.pendente { background-color: var(--cell-pendente-bg); }
-.legend-box.duvida { background-color: var(--cell-duvida-bg); }
-.legend-box.agendado { background-color: var(--cell-agendado-bg); }
+.legend-box.empty { background-color: #ffffff; border: 1px solid #cbd5e1; }
+.legend-box.pago { background-color: var(--cell-pago-bg); border: 1px solid var(--cell-pago-text); }
+.legend-box.pendente { background-color: var(--cell-pendente-bg); border: 1px solid var(--cell-pendente-text); }
+.legend-box.duvida { background-color: var(--cell-duvida-bg); border: 1px solid var(--cell-duvida-text); }
+.legend-box.agendado { background-color: var(--cell-agendado-bg); border: 1px solid var(--cell-agendado-text); }
 .legend-box.weekend { background-color: var(--cell-weekend-bg); border: 1px solid #cbd5e1; }
 
 /* ==========================================================================

@@ -43,6 +43,11 @@ Sistema de gestão e controle financeiro desenvolvido em **Node.js** e **SQLite*
 
 ## 🚀 Como Executar o Projeto
 
+### Opção 1: Via script rápido (Windows)
+Basta dar um duplo clique no arquivo `iniciar.bat` (ou executá-lo no terminal). Ele instalará as dependências caso necessário, abrirá a aplicação no seu navegador padrão (`http://localhost:9900`) e iniciará o servidor Node.js automaticamente.
+
+### Opção 2: Manualmente via Terminal
+
 1. Clone o repositório:
 ```bash
 git clone https://github.com/CELSORISSI/controle-financeiro-matriz.git
