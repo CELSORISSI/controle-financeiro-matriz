@@ -1,37 +1,37 @@
 /* ==========================================================================
-   FINANCIAL DASHBOARD MATRIX - CLEAN LIGHT THEME (FUNDO BRANCO)
+   GLOVIS FINANCIAL DASHBOARD - DARK BLUE PANEL WITH WHITE MATRIX GRID
    ========================================================================== */
 
 :root {
-  --bg-dark-app: #f8fafc;
-  --bg-dark-sidebar: #ffffff;
-  --bg-dark-card: #ffffff;
-  --bg-dark-hover: #f1f5f9;
-  --bg-dark-table-header: #f8fafc;
-  --bg-dark-modal: #ffffff;
-  --border-color: #e2e8f0;
-  --border-color-light: #cbd5e1;
+  --bg-dark-app: #0d1527;
+  --bg-dark-sidebar: #090e1a;
+  --bg-dark-card: #141e33;
+  --bg-dark-hover: #1c2b47;
+  --bg-dark-table-header: #101b30;
+  --bg-dark-modal: #16233b;
+  --border-color: #1e2d4a;
+  --border-color-light: #2c3f66;
   
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #64748b;
+  --text-primary: #e2e8f0;
+  --text-secondary: #8a99ad;
+  --text-muted: #5e6e85;
 
-  --accent-blue: #0284c7;
-  --accent-blue-hover: #0369a1;
-  --accent-green: #16a34a;
-  --accent-amber: #ca8a04;
-  --accent-purple: #9333ea;
-  --accent-red: #dc2626;
-  --accent-cyan: #0891b2;
+  --accent-blue: #0084ff;
+  --accent-blue-hover: #006dd3;
+  --accent-green: #22c55e;
+  --accent-amber: #eab308;
+  --accent-purple: #a855f7;
+  --accent-red: #ef4444;
+  --accent-cyan: #06b6d4;
 
   /* Cell Status Colors */
-  --cell-pago-bg: #16a34a;
+  --cell-pago-bg: #15803d;
   --cell-pago-text: #ffffff;
   
-  --cell-pendente-bg: #eab308;
-  --cell-pendente-text: #0f172a;
+  --cell-pendente-bg: #ca8a04;
+  --cell-pendente-text: #ffffff;
 
-  --cell-agendado-bg: #0284c7;
+  --cell-agendado-bg: #3b82f6;
   --cell-agendado-text: #ffffff;
 
   --cell-vencido-bg: #dc2626;
@@ -40,7 +40,7 @@
   --cell-duvida-bg: #ea580c;
   --cell-duvida-text: #ffffff;
 
-  --cell-isento-bg: #a855f7;
+  --cell-isento-bg: #9333ea;
   --cell-isento-text: #ffffff;
 
   --cell-weekend-bg: #f1f5f9;
@@ -66,7 +66,7 @@ body {
   min-height: 100vh;
 }
 
-/* Sidebar */
+/* Sidebar (Escuro) */
 .sidebar {
   width: 240px;
   background-color: var(--bg-dark-sidebar);
@@ -85,7 +85,7 @@ body {
   font-size: 1.35rem;
   font-weight: 800;
   letter-spacing: 1px;
-  color: var(--text-primary);
+  color: #ffffff;
 }
 
 .brand-logo span {
@@ -132,11 +132,11 @@ body {
 
 .nav-item:hover {
   background-color: var(--bg-dark-hover);
-  color: var(--text-primary);
+  color: #ffffff;
 }
 
 .nav-item.active {
-  background-color: rgba(2, 132, 199, 0.1);
+  background-color: rgba(0, 132, 255, 0.15);
   color: var(--accent-blue);
   border-left: 3px solid var(--accent-blue);
 }
@@ -157,7 +157,7 @@ body {
   min-width: 0;
 }
 
-/* Top Header */
+/* Top Header Bar (Escuro) */
 .top-header {
   display: flex;
   justify-content: space-between;
@@ -167,13 +167,12 @@ body {
   border-radius: 8px;
   border: 1px solid var(--border-color);
   margin-bottom: 1.25rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 .header-title-box h1 {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: #ffffff;
 }
 
 .header-title-box p {
@@ -186,7 +185,7 @@ body {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  background-color: #f8fafc;
+  background-color: rgba(15, 23, 42, 0.6);
   padding: 0.5rem 1rem;
   border-radius: 20px;
   border: 1px solid var(--border-color);
@@ -197,7 +196,7 @@ body {
   height: 8px;
   background-color: var(--accent-green);
   border-radius: 50%;
-  box-shadow: 0 0 6px var(--accent-green);
+  box-shadow: 0 0 8px var(--accent-green);
 }
 
 .status-text {
@@ -219,7 +218,7 @@ body {
   font-size: 0.8rem;
 }
 
-/* KPI Summary Grid */
+/* KPI Summary Grid (Escuro) */
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -235,7 +234,6 @@ body {
   display: flex;
   align-items: center;
   gap: 1rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 .kpi-icon {
@@ -249,11 +247,11 @@ body {
   flex-shrink: 0;
 }
 
-.kpi-icon.blue { background-color: rgba(2, 132, 199, 0.1); color: var(--accent-blue); }
-.kpi-icon.green { background-color: rgba(22, 163, 74, 0.1); color: var(--accent-green); }
-.kpi-icon.cyan { background-color: rgba(8, 145, 178, 0.1); color: var(--accent-cyan); }
-.kpi-icon.purple { background-color: rgba(147, 51, 234, 0.1); color: var(--accent-purple); }
-.kpi-icon.amber { background-color: rgba(202, 138, 4, 0.1); color: var(--accent-amber); }
+.kpi-icon.blue { background-color: rgba(0, 132, 255, 0.15); color: var(--accent-blue); }
+.kpi-icon.green { background-color: rgba(34, 197, 94, 0.15); color: var(--accent-green); }
+.kpi-icon.cyan { background-color: rgba(6, 182, 212, 0.15); color: var(--accent-cyan); }
+.kpi-icon.purple { background-color: rgba(168, 85, 247, 0.15); color: var(--accent-purple); }
+.kpi-icon.amber { background-color: rgba(234, 179, 8, 0.15); color: var(--accent-amber); }
 
 .kpi-info {
   display: flex;
@@ -264,7 +262,7 @@ body {
 .kpi-value {
   font-size: 1.15rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: #ffffff;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -278,7 +276,7 @@ body {
   margin-top: 0.15rem;
 }
 
-/* Filter Toolbar */
+/* Filter Toolbar (Escuro) */
 .filter-toolbar {
   background-color: var(--bg-dark-card);
   border: 1px solid var(--border-color);
@@ -289,7 +287,6 @@ body {
   gap: 1rem;
   flex-wrap: wrap;
   margin-bottom: 1.25rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 .date-navigator {
@@ -299,11 +296,11 @@ body {
 }
 
 .btn-icon {
-  background-color: #ffffff;
-  border: 1px solid var(--border-color-light);
+  background-color: var(--bg-dark-hover);
+  border: 1px solid var(--border-color);
   color: var(--text-primary);
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border-radius: 6px;
   cursor: pointer;
   display: inline-flex;
@@ -321,14 +318,14 @@ body {
 .current-month-display {
   font-size: 0.95rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: #ffffff;
   min-width: 140px;
   text-align: center;
 }
 
 .btn-secondary {
-  background-color: #ffffff;
-  border: 1px solid var(--border-color-light);
+  background-color: var(--bg-dark-hover);
+  border: 1px solid var(--border-color);
   color: var(--text-primary);
   padding: 0.45rem 0.85rem;
   border-radius: 6px;
@@ -339,14 +336,13 @@ body {
 
 .btn-secondary:hover {
   border-color: var(--text-secondary);
-  background-color: var(--bg-dark-hover);
 }
 
 .search-box {
   display: flex;
   align-items: center;
-  background-color: #ffffff;
-  border: 1px solid var(--border-color-light);
+  background-color: #0b1220;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   padding: 0.4rem 0.75rem;
   flex: 1;
@@ -362,7 +358,7 @@ body {
   background: none;
   border: none;
   outline: none;
-  color: var(--text-primary);
+  color: #ffffff;
   font-size: 0.85rem;
   width: 100%;
 }
@@ -373,8 +369,8 @@ body {
 }
 
 .filter-dropdowns select {
-  background-color: #ffffff;
-  border: 1px solid var(--border-color-light);
+  background-color: #0b1220;
+  border: 1px solid var(--border-color);
   color: var(--text-primary);
   padding: 0.45rem 0.75rem;
   border-radius: 6px;
@@ -402,9 +398,9 @@ body {
   background-color: var(--accent-blue-hover);
 }
 
-/* Table Title Bar */
+/* Table Title Bar (Escuro) */
 .table-title-bar {
-  background-color: #f8fafc;
+  background-color: #0e182e;
   border: 1px solid var(--border-color);
   border-bottom: none;
   border-top-left-radius: 8px;
@@ -418,7 +414,7 @@ body {
 .table-title {
   font-size: 0.9rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: #ffffff;
   letter-spacing: 0.5px;
 }
 
@@ -428,16 +424,19 @@ body {
   color: var(--accent-blue);
 }
 
-/* Matrix Table Styling */
+/* ==========================================================================
+   MATRIX TABLE CONTAINER - FUNDO BRANCO (WHITE GRID BACKGROUND)
+   ========================================================================== */
+
 .matrix-table-container {
   background-color: #ffffff;
-  border: 1px solid var(--border-color);
+  border: 1px solid #cbd5e1;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
   overflow-x: auto;
   max-width: 100%;
   margin-bottom: 1rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .matrix-table {
@@ -445,19 +444,20 @@ body {
   border-collapse: collapse;
   font-size: 0.75rem;
   white-space: nowrap;
+  background-color: #ffffff;
 }
 
 .matrix-table th, 
 .matrix-table td {
-  border: 1px solid var(--border-color);
+  border: 1px solid #cbd5e1;
   padding: 0.25rem 0.4rem;
   text-align: center;
 }
 
-/* Headers */
+/* Headers de Semanas e Dias da Tabela */
 .matrix-table thead tr:first-child th {
   background-color: #f1f5f9;
-  color: var(--text-secondary);
+  color: #475569;
   font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -465,7 +465,7 @@ body {
 
 .matrix-table thead tr:nth-child(2) th {
   background-color: #e2e8f0;
-  color: var(--text-primary);
+  color: #0f172a;
   font-weight: 600;
 }
 
@@ -475,7 +475,7 @@ body {
 
 .th-day-name {
   font-size: 0.65rem;
-  color: var(--text-secondary);
+  color: #64748b;
   font-weight: 400;
   display: block;
 }
@@ -483,13 +483,13 @@ body {
 .th-fixed-col {
   text-align: left !important;
   background-color: #f8fafc !important;
-  color: var(--text-primary) !important;
+  color: #0f172a !important;
   position: sticky;
   left: 0;
   z-index: 2;
 }
 
-/* Matrix Table Body */
+/* Corpo da Tabela no Fundo Branco */
 .matrix-table tbody tr {
   transition: background-color 0.15s;
 }
@@ -501,6 +501,7 @@ body {
 .td-fixed {
   text-align: left;
   background-color: #ffffff;
+  color: #0f172a;
   position: sticky;
   left: 0;
   z-index: 1;
@@ -508,13 +509,13 @@ body {
 
 .conta-name {
   font-weight: 600;
-  color: var(--text-primary);
+  color: #0f172a;
   font-size: 0.8rem;
 }
 
 .conta-desc {
   font-size: 0.7rem;
-  color: var(--text-secondary);
+  color: #475569;
 }
 
 .badge-venc-fixo {
@@ -543,10 +544,10 @@ body {
 
 .th-sortable:hover {
   background-color: #cbd5e1 !important;
-  color: var(--text-primary) !important;
+  color: #0f172a !important;
 }
 
-/* Estilos de Sub-contas & Agrupamento de Cartões */
+/* Estilos de Sub-contas & Agrupamento de Cartões no Fundo Branco */
 .tr-parent-conta {
   background-color: #f8fafc;
 }
@@ -633,6 +634,15 @@ body {
   width: 24px;
   height: 24px;
   font-size: 0.7rem;
+  background-color: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #334155;
+}
+
+.td-fixed .btn-icon:hover {
+  background-color: var(--accent-blue);
+  color: #ffffff;
+  border-color: var(--accent-blue);
 }
 
 /* Cell Interactive Item */
@@ -668,7 +678,7 @@ body {
 /* Cell States */
 .cell-content.empty {
   background-color: transparent;
-  color: var(--text-muted);
+  color: #94a3b8;
 }
 
 .cell-content.pago {
@@ -712,7 +722,7 @@ body {
   opacity: 0.9;
 }
 
-/* Legend Bar */
+/* Legend Bar (Escuro) */
 .legend-bar {
   background-color: var(--bg-dark-card);
   border: 1px solid var(--border-color);
@@ -724,12 +734,11 @@ body {
   font-size: 0.75rem;
   color: var(--text-secondary);
   flex-wrap: wrap;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 .legend-label {
   font-weight: 700;
-  color: var(--text-primary);
+  color: #ffffff;
 }
 
 .legend-item {
@@ -749,10 +758,10 @@ body {
 .legend-box.pendente { background-color: var(--cell-pendente-bg); }
 .legend-box.duvida { background-color: var(--cell-duvida-bg); }
 .legend-box.agendado { background-color: var(--cell-agendado-bg); }
-.legend-box.weekend { background-color: var(--cell-weekend-bg); border: 1px solid var(--border-color); }
+.legend-box.weekend { background-color: var(--cell-weekend-bg); border: 1px solid #cbd5e1; }
 
 /* ==========================================================================
-   MODAL CARD DIALOG STYLES (Light Mode)
+   MODAL CARD DIALOG STYLES (Escuro conforme modelo original da Imagem 2)
    ========================================================================== */
 
 .modal-overlay {
@@ -761,7 +770,7 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(15, 23, 42, 0.5);
+  background-color: rgba(5, 10, 20, 0.75);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -771,8 +780,8 @@ body {
 
 .modal-card {
   background-color: var(--bg-dark-modal);
-  border: 1px solid var(--border-color);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--border-color-light);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
   border-radius: 10px;
   width: 100%;
   max-width: 520px;
@@ -791,13 +800,12 @@ body {
   align-items: center;
   padding: 1rem 1.5rem;
   border-bottom: 1px solid var(--border-color);
-  background-color: #f8fafc;
 }
 
 .modal-header h2 {
   font-size: 1.15rem;
   font-weight: 700;
-  color: var(--accent-blue);
+  color: #0091ff;
 }
 
 .modal-close {
@@ -809,7 +817,7 @@ body {
 }
 
 .modal-close:hover {
-  color: var(--text-primary);
+  color: #ffffff;
 }
 
 .modal-body {
@@ -817,7 +825,7 @@ body {
 }
 
 .info-card-header {
-  background-color: #f8fafc;
+  background-color: #111a2d;
   border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 0.85rem 1rem;
@@ -840,7 +848,7 @@ body {
 }
 
 .info-value {
-  color: var(--text-primary);
+  color: #ffffff;
 }
 
 .text-bold {
@@ -868,11 +876,11 @@ body {
 
 .form-input {
   width: 100%;
-  background-color: #ffffff;
+  background-color: #0e1729;
   border: 1px solid var(--border-color-light);
   border-radius: 6px;
   padding: 0.65rem 0.85rem;
-  color: var(--text-primary);
+  color: #ffffff;
   font-size: 0.85rem;
   font-family: inherit;
   outline: none;
@@ -881,7 +889,7 @@ body {
 
 .form-input:focus {
   border-color: var(--accent-blue);
-  box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.2);
+  box-shadow: 0 0 0 2px rgba(0, 132, 255, 0.2);
 }
 
 textarea.form-input {
@@ -893,7 +901,7 @@ textarea.form-input {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 1.5rem;
-  background-color: #f8fafc;
+  background-color: #0f182b;
   border-top: 1px solid var(--border-color);
 }
 
@@ -904,8 +912,8 @@ textarea.form-input {
 
 .btn-cancel {
   background-color: #ffffff;
-  color: var(--text-primary);
-  border: 1px solid var(--border-color-light);
+  color: #0f172a;
+  border: none;
   padding: 0.6rem 1.1rem;
   border-radius: 6px;
   font-weight: 600;
@@ -915,7 +923,7 @@ textarea.form-input {
 }
 
 .btn-cancel:hover {
-  background-color: #f1f5f9;
+  background-color: #e2e8f0;
 }
 
 .btn-submit {
@@ -937,7 +945,7 @@ textarea.form-input {
 .btn-danger-link {
   background: none;
   border: none;
-  color: #dc2626;
+  color: #f87171;
   font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
