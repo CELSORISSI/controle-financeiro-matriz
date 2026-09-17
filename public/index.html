@@ -263,8 +263,15 @@
           <input type="hidden" id="modal-conta-id">
 
           <div class="form-group">
+            <label for="modal-conta-pai-id">Vincular como Sub-despesa de (Ex: Cartão 01)</label>
+            <select id="modal-conta-pai-id" class="form-input">
+              <option value="">Nenhuma (Conta Principal / Cartão)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
             <label for="modal-conta-nome">Nome da Despesa / Conta *</label>
-            <input type="text" id="modal-conta-nome" class="form-input" placeholder="Ex: Aluguel do Escritório" required>
+            <input type="text" id="modal-conta-nome" class="form-input" placeholder="Ex: Cartão 01 Itaú ou AWS Cloud" required>
           </div>
 
           <div class="form-group">

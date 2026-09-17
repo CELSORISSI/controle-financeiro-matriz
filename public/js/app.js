@@ -13,6 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentSortField = 'nome'; // 'nome', 'descricao', 'categoria', 'data_vencimento', 'dia_vencimento_fixo'
   let currentSortOrder = 'asc';  // 'asc' (A-Z) ou 'desc' (Z-A)
 
+  // State de expansão/recolhimento de Sub-contas (Cartões)
+  let expandedParents = {}; // parentId -> boolean
+
   // DOM Elements
   const elCurrentMonthLabel = document.getElementById('current-month-label');
   const elTableMonthBadge = document.getElementById('table-month-badge');
@@ -58,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const elBtnSaveConta = document.getElementById('btn-save-conta');
   const elModalContaTitle = document.getElementById('modal-conta-title');
   const elModalContaIdInput = document.getElementById('modal-conta-id');
+  const elModalContaPaiId = document.getElementById('modal-conta-pai-id');
   const elModalContaNome = document.getElementById('modal-conta-nome');
   const elModalContaDescricao = document.getElementById('modal-conta-descricao');
   const elModalContaCategoria = document.getElementById('modal-conta-categoria');
@@ -230,19 +234,41 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     elThead.innerHTML = theadHTML;
 
-    // Filter Contas
+    // Filter & Group Contas (Hierarquia Pai x Sub-contas)
     const searchVal = elSearchInput.value.toLowerCase().trim();
     const catVal = elFilterCategoria.value;
     const tipoVal = elFilterTipoPagamento.value;
 
-    let filteredContas = contas.filter(c => {
-      const matchSearch = c.nome.toLowerCase().includes(searchVal) || (c.descricao && c.descricao.toLowerCase().includes(searchVal));
-      const matchCat = !catVal || c.categoria === catVal;
-      return matchSearch && matchCat;
+    // Separar contas principais e mapa de sub-contas
+    const parentContas = [];
+    const childrenMap = {};
+
+    contas.forEach(c => {
+      if (c.conta_pai_id) {
+        if (!childrenMap[c.conta_pai_id]) childrenMap[c.conta_pai_id] = [];
+        childrenMap[c.conta_pai_id].push(c);
+      } else {
+        parentContas.push(c);
+      }
     });
 
-    // Aplicar Ordenação A-Z / Z-A na Grade Fixa
-    filteredContas.sort((a, b) => {
+    // Filtrar pais cujos nomes/descrições/categorias batem ou cujos filhos batem
+    let filteredParents = parentContas.filter(p => {
+      const subs = childrenMap[p.id] || [];
+      const matchParentSearch = p.nome.toLowerCase().includes(searchVal) || (p.descricao && p.descricao.toLowerCase().includes(searchVal));
+      const matchParentCat = !catVal || p.categoria === catVal;
+      
+      const matchSub = subs.some(s => {
+        const msSearch = s.nome.toLowerCase().includes(searchVal) || (s.descricao && s.descricao.toLowerCase().includes(searchVal));
+        const msCat = !catVal || s.categoria === catVal;
+        return msSearch && msCat;
+      });
+
+      return (matchParentSearch && matchParentCat) || matchSub;
+    });
+
+    // Aplicar Ordenação A-Z / Z-A na Grade Fixa dos Pais
+    filteredParents.sort((a, b) => {
       let valA = a[currentSortField];
       let valB = b[currentSortField];
 
@@ -267,63 +293,92 @@ document.addEventListener('DOMContentLoaded', () => {
       apontamentosMap[`${a.conta_id}_${a.data}`] = a;
     });
 
-    // 2. Render Table Body Rows
+    // 2. Render Table Body Rows (Hierarquia Pai & Filhos)
     let tbodyHTML = '';
 
-    filteredContas.forEach(conta => {
-      // Calculate due date string formatted
-      let dataVencDisplay = conta.data_vencimento ? formatDateBR(conta.data_vencimento) : '-';
-      if (!conta.data_vencimento && conta.dia_vencimento_fixo) {
-        dataVencDisplay = `${String(conta.dia_vencimento_fixo).padStart(2, '0')}/${String(month + 1).padStart(2, '0')}/${year}`;
+    filteredParents.forEach(parentConta => {
+      const subItems = childrenMap[parentConta.id] || [];
+      const isExpanded = expandedParents[parentConta.id] !== false; // Padrão expandido
+
+      let dataVencDisplay = parentConta.data_vencimento ? formatDateBR(parentConta.data_vencimento) : '-';
+      if (!parentConta.data_vencimento && parentConta.dia_vencimento_fixo) {
+        dataVencDisplay = `${String(parentConta.dia_vencimento_fixo).padStart(2, '0')}/${String(month + 1).padStart(2, '0')}/${year}`;
       }
 
+      // Render Linha da Conta Pai (Ex: Cartão 01)
       tbodyHTML += `
-        <tr>
+        <tr class="${subItems.length > 0 ? 'tr-parent-conta' : ''}">
           <td class="td-fixed">
-            <div class="conta-name">${escapeHTML(conta.nome)}</div>
+            <div style="display: flex; align-items: center;">
+              ${subItems.length > 0 ? `
+                <button class="btn-toggle-sub" data-parent-id="${parentConta.id}" title="${isExpanded ? 'Recolher Sub-itens' : 'Expandir Sub-itens'}">
+                  <i class="fa-solid fa-chevron-${isExpanded ? 'down' : 'right'}"></i>
+                </button>
+              ` : ''}
+              <div class="conta-name">${escapeHTML(parentConta.nome)}</div>
+              ${subItems.length > 0 ? `<span class="badge-sub-count">${subItems.length} sub-itens</span>` : ''}
+            </div>
           </td>
           <td class="td-fixed">
-            <div class="conta-desc">${escapeHTML(conta.descricao || '-')}</div>
+            <div class="conta-desc">${escapeHTML(parentConta.descricao || '-')}</div>
           </td>
           <td class="td-fixed">
-            <span class="badge-categoria">${escapeHTML(conta.categoria || 'Geral')}</span>
+            <span class="badge-categoria">${escapeHTML(parentConta.categoria || 'Geral')}</span>
           </td>
           <td class="td-fixed" style="text-align: center;">${dataVencDisplay}</td>
           <td class="td-fixed" style="text-align: center;">
-            <span class="badge-venc-fixo">Dia ${conta.dia_vencimento_fixo || '-'}</span>
+            <span class="badge-venc-fixo">Dia ${parentConta.dia_vencimento_fixo || '-'}</span>
           </td>
           <td class="td-fixed" style="text-align: center;">
-            <button class="btn-icon btn-edit-conta" data-id="${conta.id}" title="Editar Conta"><i class="fa-solid fa-pen-to-square"></i></button>
+            <button class="btn-icon btn-edit-conta" data-id="${parentConta.id}" title="Editar Conta"><i class="fa-solid fa-pen-to-square"></i></button>
+            <button class="btn-add-sub" data-parent-id="${parentConta.id}" title="Adicionar Sub-despesa a esta conta/cartão"><i class="fa-solid fa-plus"></i></button>
           </td>
       `;
 
-      // Render Matrix Cells for each Day
+      // Render Células da Matriz para Linha Pai
       days.forEach(d => {
-        const key = `${conta.id}_${d.dateStr}`;
+        const key = `${parentConta.id}_${d.dateStr}`;
         const apon = apontamentosMap[key];
 
-        // Filter by tipo de pagamento if dropdown is active
+        // Calcular se há valores acumulados dos sub-itens neste dia
+        let subDayTotal = 0;
+        let subPaidCount = 0;
+        let subTotalCount = 0;
+
+        subItems.forEach(sub => {
+          const subKey = `${sub.id}_${d.dateStr}`;
+          const subApon = apontamentosMap[subKey];
+          if (subApon) {
+            subDayTotal += subApon.valor;
+            if (subApon.status === 'pago') subPaidCount++;
+            subTotalCount++;
+          } else if (sub.dia_vencimento_fixo === d.dayNumber) {
+            subDayTotal += (sub.valor_padrao || 0);
+            subTotalCount++;
+          }
+        });
+
+        // Filtrar por tipo se ativo
         if (tipoVal && apon && apon.tipo_pagamento !== tipoVal) {
           tbodyHTML += `<td class="cell-day ${d.isWeekend ? 'weekend' : ''}"></td>`;
           return;
         }
 
-        // Calcular se o vencimento é ativo neste mês (Recorrência Mensal ou Parcelado 20x/40x)
         let isDueDateActive = false;
         let parcelaTagText = '';
 
-        if (conta.dia_vencimento_fixo === d.dayNumber) {
-          if (!conta.tipo_recorrencia || conta.tipo_recorrencia === 'mensal') {
+        if (parentConta.dia_vencimento_fixo === d.dayNumber) {
+          if (!parentConta.tipo_recorrencia || parentConta.tipo_recorrencia === 'mensal') {
             isDueDateActive = true;
-          } else if (conta.tipo_recorrencia === 'parcelado') {
-            const startStr = conta.mes_inicio || '2026-09';
+          } else if (parentConta.tipo_recorrencia === 'parcelado') {
+            const startStr = parentConta.mes_inicio || '2026-09';
             const parts = startStr.split('-');
             const sYear = parseInt(parts[0]) || year;
-            const sMonth = (parseInt(parts[1]) || (month + 1)) - 1; // 0-indexed
+            const sMonth = (parseInt(parts[1]) || (month + 1)) - 1;
 
             const diffMonths = (year - sYear) * 12 + (month - sMonth);
             const pAtual = diffMonths + 1;
-            const pTotal = conta.total_parcelas || 1;
+            const pTotal = parentConta.total_parcelas || 1;
 
             if (pAtual >= 1 && pAtual <= pTotal) {
               isDueDateActive = true;
@@ -340,22 +395,24 @@ document.addEventListener('DOMContentLoaded', () => {
           cellContentClass = apon.status || 'pendente';
           cellText = formatValorShort(apon.valor);
           cellTag = getTipoPagamentoTag(apon.tipo_pagamento);
-          if (parcelaTagText) {
-            cellTag += ` (${parcelaTagText})`;
-          }
+          if (parcelaTagText) cellTag += ` (${parcelaTagText})`;
+        } else if (subItems.length > 0 && subDayTotal > 0) {
+          // Valor Acumulado das Sub-despesas do Cartão
+          cellContentClass = (subPaidCount > 0 && subPaidCount === subTotalCount) ? 'pago' : 'pendente';
+          cellText = formatValorShort(subDayTotal);
+          cellTag = 'ACUM';
         } else if (isDueDateActive) {
-          // Célula gerada automaticamente por recorrência/parcela no dia fixo
           cellContentClass = 'pendente';
-          cellText = formatValorShort(conta.valor_padrao);
+          cellText = formatValorShort(parentConta.valor_padrao);
           cellTag = parcelaTagText ? `P.${parcelaTagText}` : 'VENC';
         }
 
         tbodyHTML += `
           <td class="cell-day ${d.isWeekend ? 'weekend' : ''}" 
-              data-conta-id="${conta.id}" 
-              data-conta-nome="${escapeHTML(conta.nome)}"
+              data-conta-id="${parentConta.id}" 
+              data-conta-nome="${escapeHTML(parentConta.nome)}"
               data-date-str="${d.dateStr}"
-              data-valor-padrao="${conta.valor_padrao || 0}">
+              data-valor-padrao="${(subDayTotal || parentConta.valor_padrao || 0)}">
             <div class="cell-content ${cellContentClass}">
               ${cellText ? `<div>${cellText}</div>` : ''}
               ${cellTag ? `<span class="cell-tag">${cellTag}</span>` : ''}
@@ -365,9 +422,86 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       tbodyHTML += `</tr>`;
+
+      // Render Linhas Filhas (Sub-despesas) se expandido
+      if (isExpanded && subItems.length > 0) {
+        subItems.forEach(child => {
+          let childDataVencDisplay = child.data_vencimento ? formatDateBR(child.data_vencimento) : '-';
+          if (!child.data_vencimento && (child.dia_vencimento_fixo || parentConta.dia_vencimento_fixo)) {
+            const df = child.dia_vencimento_fixo || parentConta.dia_vencimento_fixo;
+            childDataVencDisplay = `${String(df).padStart(2, '0')}/${String(month + 1).padStart(2, '0')}/${year}`;
+          }
+
+          tbodyHTML += `
+            <tr class="tr-sub-conta">
+              <td class="td-fixed">
+                <div class="sub-conta-indent">
+                  <i class="fa-solid fa-turn-up fa-rotate-90"></i>
+                  <span class="conta-name" style="font-size: 0.78rem;">${escapeHTML(child.nome)}</span>
+                </div>
+              </td>
+              <td class="td-fixed">
+                <div class="conta-desc">${escapeHTML(child.descricao || '-')}</div>
+              </td>
+              <td class="td-fixed">
+                <span class="badge-categoria">${escapeHTML(child.categoria || parentConta.categoria || 'Geral')}</span>
+              </td>
+              <td class="td-fixed" style="text-align: center;">${childDataVencDisplay}</td>
+              <td class="td-fixed" style="text-align: center;">
+                <span class="badge-venc-fixo">Dia ${child.dia_vencimento_fixo || parentConta.dia_vencimento_fixo || '-'}</span>
+              </td>
+              <td class="td-fixed" style="text-align: center;">
+                <button class="btn-icon btn-edit-conta" data-id="${child.id}" title="Editar Sub-despesa"><i class="fa-solid fa-pen-to-square"></i></button>
+              </td>
+          `;
+
+          // Células da Matriz para Sub-despesa
+          days.forEach(d => {
+            const key = `${child.id}_${d.dateStr}`;
+            const apon = apontamentosMap[key];
+
+            if (tipoVal && apon && apon.tipo_pagamento !== tipoVal) {
+              tbodyHTML += `<td class="cell-day ${d.isWeekend ? 'weekend' : ''}"></td>`;
+              return;
+            }
+
+            const targetDiaFixo = child.dia_vencimento_fixo || parentConta.dia_vencimento_fixo;
+            let isDueDateActive = (targetDiaFixo === d.dayNumber);
+
+            let cellContentClass = 'empty';
+            let cellText = '';
+            let cellTag = '';
+
+            if (apon) {
+              cellContentClass = apon.status || 'pendente';
+              cellText = formatValorShort(apon.valor);
+              cellTag = getTipoPagamentoTag(apon.tipo_pagamento);
+            } else if (isDueDateActive) {
+              cellContentClass = 'pendente';
+              cellText = formatValorShort(child.valor_padrao);
+              cellTag = 'ITEM';
+            }
+
+            tbodyHTML += `
+              <td class="cell-day ${d.isWeekend ? 'weekend' : ''}" 
+                  data-conta-id="${child.id}" 
+                  data-conta-nome="${escapeHTML(child.nome)} (${escapeHTML(parentConta.nome)})"
+                  data-date-str="${d.dateStr}"
+                  data-valor-padrao="${child.valor_padrao || 0}">
+                <div class="cell-content ${cellContentClass}">
+                  ${cellText ? `<div>${cellText}</div>` : ''}
+                  ${cellTag ? `<span class="cell-tag">${cellTag}</span>` : ''}
+                </div>
+              </td>
+            `;
+          });
+
+          tbodyHTML += `</tr>`;
+        });
+      }
     });
 
-    if (filteredContas.length === 0) {
+    if (filteredParents.length === 0) {
       tbodyHTML = `<tr><td colspan="${6 + days.length}" style="text-align: center; padding: 2rem; color: var(--text-secondary);">Nenhuma conta encontrada para o filtro.</td></tr>`;
     }
 
@@ -384,6 +518,25 @@ document.addEventListener('DOMContentLoaded', () => {
           currentSortOrder = 'asc';
         }
         renderMatrix();
+      });
+    });
+
+    // Attach Toggle Sub-items Listeners
+    document.querySelectorAll('.btn-toggle-sub').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const pId = btn.getAttribute('data-parent-id');
+        expandedParents[pId] = !(expandedParents[pId] !== false);
+        renderMatrix();
+      });
+    });
+
+    // Attach Quick Add Sub-despesa Listeners
+    document.querySelectorAll('.btn-add-sub').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const pId = btn.getAttribute('data-parent-id');
+        openContaModal(null, pId);
       });
     });
 
@@ -532,10 +685,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --- CONTA MODAL FUNCTIONS ---
-  function openContaModal(conta = null) {
+  function openContaModal(conta = null, presetParentId = null) {
+    // Popular opções do dropdown Conta Pai / Cartão
+    let optionsHTML = '<option value="">Nenhuma (Esta é uma Conta Principal / Cartão)</option>';
+    const targetId = conta ? String(conta.id) : '';
+    contas.filter(c => !c.conta_pai_id && String(c.id) !== targetId).forEach(parent => {
+      optionsHTML += `<option value="${parent.id}">${escapeHTML(parent.nome)} (${escapeHTML(parent.categoria || 'Geral')})</option>`;
+    });
+    elModalContaPaiId.innerHTML = optionsHTML;
+
     if (conta) {
       elModalContaTitle.textContent = 'Editar Conta / Despesa';
       elModalContaIdInput.value = conta.id;
+      elModalContaPaiId.value = conta.conta_pai_id || '';
       elModalContaNome.value = conta.nome;
       elModalContaDescricao.value = conta.descricao || '';
       elModalContaCategoria.value = conta.categoria || 'Geral';
@@ -545,8 +707,9 @@ document.addEventListener('DOMContentLoaded', () => {
       elModalContaTotalParcelas.value = conta.total_parcelas || 20;
       elModalContaMesInicio.value = conta.mes_inicio || '2026-09';
     } else {
-      elModalContaTitle.textContent = 'Nova Conta a Pagar';
+      elModalContaTitle.textContent = presetParentId ? 'Nova Sub-despesa' : 'Nova Conta a Pagar';
       elModalContaIdInput.value = '';
+      elModalContaPaiId.value = presetParentId || '';
       elModalContaNome.value = '';
       elModalContaDescricao.value = '';
       elModalContaCategoria.value = 'Geral';
@@ -566,6 +729,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function saveConta() {
     const id = elModalContaIdInput.value;
+    const conta_pai_id = elModalContaPaiId.value ? parseInt(elModalContaPaiId.value) : null;
     const nome = elModalContaNome.value.trim();
     const descricao = elModalContaDescricao.value.trim();
     const categoria = elModalContaCategoria.value;
@@ -581,6 +745,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const payload = { 
+      conta_pai_id,
       nome, 
       descricao, 
       categoria, 

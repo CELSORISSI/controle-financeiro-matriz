@@ -13,9 +13,10 @@ router.get('/', (req, res) => {
   });
 });
 
-// POST /api/contas - Criar nova conta
+// POST /api/contas - Criar nova conta ou sub-despesa
 router.post('/', (req, res) => {
   const { 
+    conta_pai_id,
     nome, 
     descricao, 
     categoria, 
@@ -33,15 +34,16 @@ router.post('/', (req, res) => {
 
   const query = `
     INSERT INTO contas (
-      nome, descricao, categoria, data_vencimento, dia_vencimento_fixo, valor_padrao,
+      conta_pai_id, nome, descricao, categoria, data_vencimento, dia_vencimento_fixo, valor_padrao,
       tipo_recorrencia, total_parcelas, mes_inicio
     )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   db.run(
     query,
     [
+      conta_pai_id ? parseInt(conta_pai_id) : null,
       nome,
       descricao || '',
       categoria || 'Geral',
@@ -58,6 +60,7 @@ router.post('/', (req, res) => {
       }
       res.status(201).json({
         id: this.lastID,
+        conta_pai_id: conta_pai_id ? parseInt(conta_pai_id) : null,
         nome,
         descricao,
         categoria,
@@ -76,6 +79,7 @@ router.post('/', (req, res) => {
 router.put('/:id', (req, res) => {
   const { id } = req.params;
   const { 
+    conta_pai_id,
     nome, 
     descricao, 
     categoria, 
@@ -89,7 +93,7 @@ router.put('/:id', (req, res) => {
 
   const query = `
     UPDATE contas 
-    SET nome = ?, descricao = ?, categoria = ?, data_vencimento = ?, dia_vencimento_fixo = ?, valor_padrao = ?,
+    SET conta_pai_id = ?, nome = ?, descricao = ?, categoria = ?, data_vencimento = ?, dia_vencimento_fixo = ?, valor_padrao = ?,
         tipo_recorrencia = ?, total_parcelas = ?, mes_inicio = ?
     WHERE id = ?
   `;
@@ -97,6 +101,7 @@ router.put('/:id', (req, res) => {
   db.run(
     query,
     [
+      conta_pai_id ? parseInt(conta_pai_id) : null,
       nome,
       descricao,
       categoria,

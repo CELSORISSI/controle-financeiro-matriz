@@ -540,6 +540,83 @@ body {
   color: #ffffff !important;
 }
 
+/* Estilos de Sub-contas & Agrupamento de Cartões */
+.tr-parent-conta {
+  background-color: rgba(16, 28, 54, 0.7);
+}
+
+.tr-sub-conta {
+  background-color: rgba(10, 17, 33, 0.6);
+}
+
+.tr-sub-conta .td-fixed {
+  background-color: #080f1d !important;
+  border-left: 3px solid var(--accent-cyan) !important;
+}
+
+.sub-conta-indent {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-left: 0.75rem;
+  color: #94a3b8;
+  font-size: 0.78rem;
+}
+
+.sub-conta-indent i {
+  color: var(--accent-cyan);
+  font-size: 0.65rem;
+}
+
+.badge-sub-count {
+  background-color: rgba(168, 85, 247, 0.2);
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  padding: 0.15rem 0.45rem;
+  border-radius: 12px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  margin-left: 0.4rem;
+}
+
+.badge-acumulado {
+  background-color: rgba(34, 197, 94, 0.15);
+  color: var(--accent-green);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.btn-toggle-sub {
+  background: none;
+  border: none;
+  color: var(--accent-blue);
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  font-size: 0.75rem;
+  margin-right: 0.25rem;
+}
+
+.btn-add-sub {
+  background-color: rgba(34, 197, 94, 0.15);
+  color: var(--accent-green);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.7rem;
+  margin-left: 0.2rem;
+  transition: all 0.2s;
+}
+
+.btn-add-sub:hover {
+  background-color: var(--accent-green);
+  color: #ffffff;
+}
+
 /* Cell Interactive Item */
 .cell-day {
   cursor: pointer;
