@@ -648,8 +648,8 @@ body {
 /* Cell Interactive Item */
 .cell-day {
   cursor: pointer;
-  width: 48px;
-  min-width: 48px;
+  width: 34px;
+  min-width: 34px;
   height: 35px;
   padding: 1px !important;
   vertical-align: middle;

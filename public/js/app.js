@@ -218,18 +218,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Render Table Header (2 Rows com Categoria Fixa e Ordenação)
     let theadHTML = `
       <tr>
-        <th colspan="6" class="th-fixed-col">Agenda de Contas & Vencimentos</th>
+        <th colspan="5" class="th-fixed-col">Agenda de Contas & Vencimentos</th>
         ${weekGroups.map(w => `<th colspan="${w.count}" class="th-week-group">Sem. ${w.weekNum}</th>`).join('')}
       </tr>
       <tr>
-        <th class="th-fixed-col th-sortable" data-sort-field="nome" style="min-width: 170px; cursor: pointer;">Despesa ${getSortIcon('nome')}</th>
-        <th class="th-fixed-col th-sortable" data-sort-field="descricao" style="min-width: 150px; cursor: pointer;">Descrição ${getSortIcon('descricao')}</th>
-        <th class="th-fixed-col th-sortable" data-sort-field="categoria" style="min-width: 110px; cursor: pointer;">Categoria ${getSortIcon('categoria')}</th>
-        <th class="th-fixed-col th-sortable" data-sort-field="data_vencimento" style="min-width: 90px; cursor: pointer; text-align: center;">Data Venc. ${getSortIcon('data_vencimento')}</th>
-        <th class="th-fixed-col th-sortable" data-sort-field="dia_vencimento_fixo" style="min-width: 80px; cursor: pointer; text-align: center;">Venc. Fixo ${getSortIcon('dia_vencimento_fixo')}</th>
-        <th class="th-fixed-col" style="min-width: 55px; text-align: center;">Ações</th>
+        <th class="th-fixed-col th-sortable" data-sort-field="nome" style="min-width: 150px; cursor: pointer;">Despesa ${getSortIcon('nome')}</th>
+        <th class="th-fixed-col th-sortable" data-sort-field="categoria" style="min-width: 95px; cursor: pointer;">Categoria ${getSortIcon('categoria')}</th>
+        <th class="th-fixed-col th-sortable" data-sort-field="data_vencimento" style="min-width: 75px; cursor: pointer; text-align: center;">Data Venc. ${getSortIcon('data_vencimento')}</th>
+        <th class="th-fixed-col th-sortable" data-sort-field="dia_vencimento_fixo" style="min-width: 65px; cursor: pointer; text-align: center;">Venc. Fixo ${getSortIcon('dia_vencimento_fixo')}</th>
+        <th class="th-fixed-col" style="min-width: 50px; text-align: center;">Ações</th>
         ${days.map(d => `
-          <th style="min-width: 48px;" class="${d.isWeekend ? 'cell-weekend' : ''}">
+          <th style="min-width: 34px;" class="${d.isWeekend ? 'cell-weekend' : ''}">
             <div>${d.dayNumber}</div>
             <span class="th-day-name">${d.dayName}</span>
           </th>
@@ -322,9 +321,6 @@ document.addEventListener('DOMContentLoaded', () => {
               <div class="conta-name">${escapeHTML(parentConta.nome)}</div>
               ${subItems.length > 0 ? `<span class="badge-sub-count">${subItems.length} sub-itens</span>` : ''}
             </div>
-          </td>
-          <td class="td-fixed">
-            <div class="conta-desc">${escapeHTML(parentConta.descricao || '-')}</div>
           </td>
           <td class="td-fixed">
             <span class="badge-categoria">${escapeHTML(parentConta.categoria || 'Geral')}</span>
@@ -458,9 +454,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
               </td>
               <td class="td-fixed">
-                <div class="conta-desc">${escapeHTML(child.descricao || '-')}</div>
-              </td>
-              <td class="td-fixed">
                 <span class="badge-categoria">${escapeHTML(child.categoria || parentConta.categoria || 'Geral')}</span>
               </td>
               <td class="td-fixed" style="text-align: center;">${childDataVencDisplay}</td>
@@ -550,7 +543,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     if (filteredParents.length === 0) {
-      tbodyHTML = `<tr><td colspan="${6 + days.length}" style="text-align: center; padding: 2rem; color: var(--text-secondary);">Nenhuma conta encontrada para o filtro.</td></tr>`;
+      tbodyHTML = `<tr><td colspan="${5 + days.length}" style="text-align: center; padding: 2rem; color: var(--text-secondary);">Nenhuma conta encontrada para o filtro.</td></tr>`;
     }
 
     elTbody.innerHTML = tbodyHTML;
